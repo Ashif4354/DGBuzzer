@@ -33,8 +33,16 @@ const Host = ({ navigation }) => {
     }
 
     const onStartHandler = () => {
+        if (roomName == '') {
+            setErrorMessage('Please enter room name')
+            return
+        } else if (roomSize == 0) {
+            setErrorMessage('Room size cannot be zero')
+            return
+        }
+        
         navigation.pop()
-        navigation.navigate('HostRoom', { roomName: 'BUZZWIN', roomSize: 15 })
+        navigation.navigate('HostRoom', { roomName: roomName, roomSize: roomSize })
     }
 
     return (

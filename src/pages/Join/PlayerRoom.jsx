@@ -1,17 +1,37 @@
 import React, { useState, useEffect} from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import dgram from 'react-native-udp'
 
 import RoomBackground from '../../Components/RoomBackground';
 import StatusIndicator from '../../Components/StatusIndicator';
 import { backButtonAlert } from '../../Scripts/Alerts';
+import { messageRecieveHandlerForPlayerRoom } from './Scripts/MessageRecievers';
+import { playBuzzer } from '../../Scripts/PlaySounds';
 
 function PlayerRoom({ navigation, route }) {
     const [status, setStatus] = useState(0);
     const [myPosition, setMyPosition] = useState(0);
-    const [firstPosition, setFirstPosition] = useState('Nil');
+    const [firstPosition, setFirstPosition] = useState('N/A');
+    const [UDPSocket, setUDPSocket] = useState(null)
+    
 
     const onExitHandler = () => {
         navigation.popToTop()
+    }
+
+    const onBuzz = () => {
+        if (status != 1) {
+            return
+        }
+        const buzzMsg = JSON.stringify({
+            code: 500,
+            roomId: route.params.roomId,
+            playerName: route.params.playerName,
+        })
+
+        UDPSocket.send(buzzMsg, undefined, undefined, 10000, route.params.serverIP, (err) => {console.log(err)})
+        setStatus(-1)
+        playBuzzer()
     }
 
     useEffect(() => {
@@ -19,6 +39,15 @@ function PlayerRoom({ navigation, route }) {
             e.preventDefault()
             backButtonAlert(navigation,'player', e)
         })
+
+        const socket = dgram.createSocket({ type: 'udp4', debug: true })
+        socket.bind(10001, () => {
+            setUDPSocket(socket)
+            socket.on('message', (msg, rinfo) => {
+                messageRecieveHandlerForPlayerRoom(msg, rinfo, socket, setStatus, setMyPosition, setFirstPosition, route.params.playerName)
+            })
+        })        
+
     }, [])
 
     return (
@@ -50,12 +79,13 @@ function PlayerRoom({ navigation, route }) {
                 <View style={styles.buzzerContainer}>
                     <TouchableOpacity
                         style={styles.buzzerBtn}
+                        onPress={onBuzz}
                     >
                         <Text style={styles.buzzerBtnText}>BUZZ</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.ackContainer}>
-                    <Text style={styles.ackText}>My Position : {myPosition}</Text>
+                    <Text style={styles.ackText}>My Position : {myPosition == 0 ? 'N/A' : myPosition}</Text>
                     <Text style={styles.ackText}>First Position : {firstPosition}</Text>
                 </View>
                 <View style={styles.btnContainer}>

@@ -20,12 +20,16 @@ const Home = ({ navigation }) => {
                     >
                         <Text style={[styles.btntext, { color: 'black' }]}>Join</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity
+                    {/* <TouchableOpacity
                         style={[styles.btn, styles.joinBtn, styles.boxshadow]}
                         onPress={() => navigation.navigate('NetworkInformation')}
                     >
                         <Text style={[styles.btntext, { color: 'black' }]}>NetworkInfo</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
+
+                </View>
+                <View style={styles.instructionsContainer}>
+                    <Text style={styles.instructionsText}>Host and Players must be connected to same wifi network</Text>
                 </View>
                 <View style={styles.gadsContainer}>
                     {/* <Text style={styles.gadsText}>Google Ads</Text> */}
@@ -68,7 +72,8 @@ const styles = StyleSheet.create({
     },
     btnContainer: {
         width: '60%',
-        height: '75%',
+        marginTop: 50,
+        // height: '75%',
         // marginBottom: 20,
         // backgroundColor: 'yellow',
         justifyContent: 'center',
@@ -82,7 +87,6 @@ const styles = StyleSheet.create({
     },
     hostBtn: {
         backgroundColor: '#0E2F71',
-        marginBottom: 35,
     },
     joinBtn: {
         backgroundColor: 'white',
@@ -91,6 +95,19 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 32,
         fontFamily: 'Iceland-Regular'
+    },
+    instructionsContainer: {
+        width: '90%',
+        // height: '25%',
+        // backgroundColor: 'red',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    instructionsText: {
+        color: 'black',
+        fontSize: 25,
+        fontFamily: 'Iceland-Regular',
+        textAlign: 'center',
     },
     gadsContainer: {
         width: '100%',

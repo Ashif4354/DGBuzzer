@@ -1,62 +1,84 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, BackHandler } from 'react-native'
 import dgram from 'react-native-udp'
-import { NetworkInfo } from 'react-native-network-info';
 
 import RoomBackground from '../../Components/RoomBackground'
 import StatusIndicator from '../../Components/StatusIndicator'
 import { backButtonAlert } from '../../Scripts/Alerts'
-import onMessageRecieveHandlerForHost from './Scripts/MessageRecievers'
+import { messageRecieveHandlerForHost } from './Scripts/MessageRecievers'
+import { sendActiveStatus } from './Scripts/SendActiveStatus'
 
 const HostRoom = ({ navigation, route }) => {
-    const [participantList, setParticipantList] = useState(['alpha', 'beta', 'gamma', 'delta', 'epsilon', 'zeta', 'eta', 'theta', 'iota', 'kappa', 'lambda', 'mu', 'nu', 'xi', 'omicron', 'pi'])
-    // const [participantCount, setParticipantCount] = useState(0)
-    const [BuzzTimeline, setBuzzTimeline] = useState(['alpha', 'beta', 'gamma', 'delta', 'epsilon', 'zeta', 'eta', 'theta', 'iota', 'kappa', 'lambda', 'mu', 'nu', 'xi', 'omicron', 'pi'])
-    // const [BuzzTimeline, setBuzzTimeline] = useState([])
-    const [active, setActive] = useState(false)
+    const [participantList, setParticipantList] = useState({})
+    const [BuzzTimeline, setBuzzTimeline] = useState([])
+    const roomID = useRef(0)
     const [UDPSocket, setUDPSocket] = useState(null)
+    const [active, setActive] = useState(false)
+    const initialTime = useRef(0)
+    const [times, setTimes] = useState([])
+    const activeState = useRef(active)
 
     const onStartHandler = () => {
-        setActive(true)
+        setActive(prev => !prev)
+        sendActiveStatus(UDPSocket, participantList)
+        initialTime.current = Date.now()
     }
 
     const onResetHandler = () => {
         setBuzzTimeline([])
+        sendActiveStatus(UDPSocket, participantList)
+        initialTime.current = Date.now()
+        setTimes([])
     }
 
     const onExitHandler = () => {
+        UDPSocket.close()
         navigation.popToTop()
     }
 
+    const getConvertedTime = (time) => {
+        let milliseconds = time % 1000
+        let seconds = Math.floor(time / 1000)
+        let minutes = Math.floor(seconds / 60)
+
+        time = minutes.toString().padStart(2, '0') + ':' + (seconds - minutes * 60).toString().padStart(2, '0') + ':' + milliseconds.toString().padStart(3, '0')
+
+        return time
+    }
+
+
     useEffect(() => {
+        // setRoomID(Math.floor(Math.random() * 1000))
+        roomID.current = Math.floor(Math.random() * 1000)
+
         navigation.addListener('beforeRemove', (e) => {
             e.preventDefault()
             backButtonAlert(navigation, 'host', e)
         })
-        NetworkInfo.getBroadcast().then(broadcast => {
-            console.log('broadcast ' + broadcast);
-        });
 
         const socket = dgram.createSocket('udp4')
-        socket.bind(10000, () => {``
-            console.log('host socket created')
-            
+        socket.bind(10000, () => {
+            setUDPSocket(socket)
+
             socket.on('message', (msg, rinfo) => {
-                console.log('h' + String.fromCharCode.apply(null, new Uint8Array(msg)))
-                console.log(rinfo)
-                onMessageRecieveHandlerForHost(msg, rinfo, socket, route.params.roomName, route.params.roomSize, active, participantList)
+                messageRecieveHandlerForHost(msg, rinfo, socket, route.params.roomName, roomID.current, Object.keys(participantList).length < route.params.roomSize, activeState, setParticipantList, setBuzzTimeline, setTimes, initialTime.current)
             })
         })
-
-        NetworkInfo.getIPV4Address().then(ipv4Address => {
-            console.log('ipv4 h' + ipv4Address);
-        });
-
-
 
 
     }, [])
 
+    useEffect(() => {
+        activeState.current = active
+    }, [active])
+
+    useEffect(() => {
+        if (UDPSocket) {
+            Object.keys(participantList).forEach((name) => {
+                UDPSocket.send(JSON.stringify({ code: 501, buzzTimeline: BuzzTimeline }), undefined, undefined, 10001, participantList[name])
+            })
+        }
+    }, [BuzzTimeline])
 
     return (
         <View style={styles.mainContainer}>
@@ -91,7 +113,7 @@ const HostRoom = ({ navigation, route }) => {
                             active ? (
                                 <Text style={styles.buzzTimelineHeading}>Buzz Timeline</Text>
                             ) : (
-                                <Text style={styles.participantJoined}>Participants Joined: {participantList.length}</Text>
+                                <Text style={styles.participantJoined}>Participants Joined: {Object.keys(participantList).length}</Text>
                             )
                         }
 
@@ -112,7 +134,7 @@ const HostRoom = ({ navigation, route }) => {
                                                         <Text style={styles.nameText}>{name}</Text>
                                                     </View>
                                                     <View style={styles.timeContainer}>
-                                                        <Text style={styles.timeText}>00:01:45</Text>
+                                                        <Text style={styles.timeText}>{getConvertedTime(times[index])}</Text>
                                                     </View>
                                                 </View>
                                             )
@@ -128,7 +150,7 @@ const HostRoom = ({ navigation, route }) => {
                             <View style={styles.participantList}>
                                 <ScrollView style={styles.participantListScroll}>
                                     {
-                                        participantList.map((name, index) => {
+                                        Object.keys(participantList).map((name, index) => {
                                             return (
                                                 <View key={index} style={styles.eachName}>
                                                     <Text style={styles.nameText}>{name}</Text>
@@ -154,7 +176,7 @@ const HostRoom = ({ navigation, route }) => {
                         ) : (
                             <TouchableOpacity
                                 style={[styles.btn, styles.startBtn]}
-                                onPress={onStartHandler}>
+                                onPress={() => onStartHandler()}>
 
                                 <Text style={styles.btnText}>Start</Text>
                             </TouchableOpacity>
@@ -244,13 +266,6 @@ const styles = StyleSheet.create({
         color: 'black',
         marginBottom: 3,
     },
-    buzzTimelineHeading: {
-        fontSize: 22,
-        fontFamily: 'Iceland-Regular',
-        color: 'black',
-        marginBottom: 3,
-        // backgroundColor: 'yellow',
-    },
     participantList: {
         width: '100%',
         height: '88%',
@@ -260,20 +275,6 @@ const styles = StyleSheet.create({
     participantListScroll: {
         margin: 20,
         // backgroundColor: 'blue'
-    },
-    eachName: {
-        width: '100%',
-        height: 30,
-        backgroundColor: '#CFCFCF',
-        borderRadius: 10,
-        marginBottom: 5,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    nameText: {
-        fontSize: 20,
-        fontFamily: 'Iceland-Regular',
-        color: 'black',
     },
     buzzTimelineHeadingContainer: {
         width: '100%',

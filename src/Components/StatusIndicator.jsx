@@ -10,7 +10,7 @@ const StatusIndicator = (props) => {
 
 const styles = StyleSheet.create({
     statusIndicator: {
-        width: '45%',
+        width: '55%',
         height: '80%',
         borderRadius: 4,
         alignItems: 'center',

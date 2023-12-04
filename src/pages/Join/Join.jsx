@@ -1,56 +1,61 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, RefreshControl } from 'react-native';
 import dgram from 'react-native-udp'
-import { NetworkInfo } from 'react-native-network-info';
+
+import { MessageRecieveHandlerForJoin } from './Scripts/MessageRecievers';
+
 
 const Join = ({ navigation }) => {
-    const [playerName, setPlayerName] = useState('Chamber');
-    // const [rooms, setRooms] = useState({'north': '192.168.5.5', 'south': '192.168.8.8', 'east': '192.168.9.9', 'west': '192.168.0.0'});
+    const [playerName, setPlayerName] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [UDPSocket, setUDPSocket] = useState(null)
-    const [rooms, setRooms] = useState({ 'north': '192.168.5.5' });
+    const [rooms, setRooms] = useState({});
+    const [refreshing, setRefreshing] = useState(false);
 
-    const onJoinRoomHandler = () => {
-        // if (playerName == '') {
-        //     setErrorMessage('Please enter your name');
-        //     return
-        // }
-        console.log('before send')
-        UDPSocket.send(JSON.stringify({ code: 100 }), 0, JSON.stringify({ code: 100 }).length, 10000, '255.255.255.255', (e) => console.log(e)) // broadcast player presence
-        console.log('after send')
-        // navigation.pop();
-        // navigation.navigate('PlayerRoom', { roomName: 'BUZZWIN', playerName: playerName });
+    const onJoinRoomHandler = (roomName) => {
+        if (playerName == '') {
+            setErrorMessage('Please enter your name');
+            return
+        }
+        UDPSocket.send(JSON.stringify({ code: 200, playerName: playerName }), undefined, undefined, 10000, rooms[roomName], (e) => console.log(e)) // send join request to host
+
+    }
+
+    const broadcastPresence = (socket) => {
+        try {
+            UDPSocket.send(JSON.stringify({ code: 100 }), undefined, undefined, 10000, '255.255.255.255', (e) => console.log(e))
+        } catch (e) {
+            socket.send(JSON.stringify({ code: 100 }), undefined, undefined, 10000, '255.255.255.255', (e) => console.log(e))
+        }
+    }
+
+    const onRefresh = () => {
+        setRooms({})
+        setRefreshing(true)
+        broadcastPresence(UDPSocket)
+
+        setTimeout(() => {
+            setRefreshing(false)
+        }, 1000)
+
     }
 
     useEffect(() => {
 
-        NetworkInfo.getIPV4Address().then(ipv4Address => {
-            console.log('ipv4 p' + ipv4Address);
-        });
-
         const socket = dgram.createSocket({ type: 'udp4', debug: true })
-        // udpSockett.current = socket
         socket.bind(10001, () => {
-            console.log('player socket created')
             socket.setBroadcast(true)
             setUDPSocket(socket)
 
-        })
-        setTimeout(() => {
-            socket.send(JSON.stringify({ code: 100 }), 0, JSON.stringify({ code: 100 }).length, 10000, '255.255.255.255', (e) => console.log(e)) // broadcast player presence
-        }, 5000)
+            socket.on('message', (msg, rinfo) => {
+                MessageRecieveHandlerForJoin(msg, rinfo, setRooms, setErrorMessage, navigation)
+            })
 
-
-        socket.on('message', (msg, rinfo) => {
-            console.log(msg);
-            console.log(rinfo)
-            onMessageRecieveHandlerForJoin(msg, rinfo, setRooms, setErrorMessage, (err) => { console.log(err) })
+            broadcastPresence(socket)
         })
 
-
-
-        return () => socket.close()
     }, [])
+
     return (
         <View style={styles.mainContainer}>
             <View style={styles.upperContainer}>
@@ -68,7 +73,9 @@ const Join = ({ navigation }) => {
                     <View style={[styles.roomsInProgressContainer, styles.boxshadow]}>
                         <Text style={styles.roomsInProgressText}>Rooms in Progress</Text>
                         <View style={styles.roomInProgressScrollViewContainer}>
-                            <ScrollView style={styles.roomsInProgressScrollView}>
+                            <ScrollView style={styles.roomsInProgressScrollView}
+                                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                            >
                                 {
                                     Object.keys(rooms).map((room, index) => {
                                         return (
@@ -77,7 +84,7 @@ const Join = ({ navigation }) => {
                                                     <Text style={styles.roomInProgressName}>{room}</Text>
                                                 </View>
                                                 <TouchableOpacity style={styles.JoinBtn}
-                                                    onPress={onJoinRoomHandler}
+                                                    onPress={() => onJoinRoomHandler(room)}
                                                 >
                                                     <Text style={styles.joinBtnText}>Join</Text>
                                                 </TouchableOpacity>
