@@ -112,7 +112,6 @@ const Join = ({ navigation }) => {
 const styles = StyleSheet.create({
     mainContainer: {
         flex: 1,
-        backgroundColor: 'white',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#0E2F71',
