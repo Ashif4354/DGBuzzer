@@ -21,7 +21,7 @@ const MyNativeStack = () => {
         <NativeStack.Screen name="PlayerRoom" component={PlayerRoom} />
       </NativeStack.Group>
       <NativeStack.Group screenOptions={{ presentation: 'modal' }}>
-      <NativeStack.Screen name="NetworkInformation" component={NetworkInfo} />
+        <NativeStack.Screen name="NetworkInformation" component={NetworkInfo} />
       </NativeStack.Group>
 
     </NativeStack.Navigator>
