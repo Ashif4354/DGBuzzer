@@ -3,7 +3,7 @@
 function messageRecieveHandlerForHost(msg, rinfo, socket, roomName, roomId, roomNotFull, active, setParticipantList, setBuzzTimeline, setTimes, initialTime) {
     msg = JSON.parse(String.fromCharCode.apply(null, new Uint8Array(msg)))
     active = active.current
-    // console.log(roomId, msg) //
+    // console.log(roomId, msg)
 
     const playerPort = 10001
 
@@ -13,13 +13,13 @@ function messageRecieveHandlerForHost(msg, rinfo, socket, roomName, roomId, room
                 setTimes(prevState => {
                     return [...prevState, Date.now() - initialTime]
                 })
-                return [...prevState, msg.playerName ]
+                return [...prevState, msg.playerName]
             } else {
-                return [...prevState ]
+                return [...prevState]
             }
         })
 
-    } else if (msg.code === 100) {
+    } else if (msg.code === 100 && active !== -1) {
 
         let response = JSON.stringify({
             code: 101,
@@ -32,6 +32,7 @@ function messageRecieveHandlerForHost(msg, rinfo, socket, roomName, roomId, room
             }
         })
     } else if (msg.code === 200) {
+        // console.log('200 recieved', roomNotFull, active )
         if (roomNotFull && !active) {
             let response = JSON.stringify({
                 code: 201,

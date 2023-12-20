@@ -225,9 +225,12 @@ const styles = StyleSheet.create({
     },
 
     roomSize: {
+        width: 60,
         fontSize: 30,
         color: 'black',
-        fontFamily: 'Iceland-Regular'
+        fontFamily: 'Iceland-Regular',
+        // backgroundColor: 'blue',
+        textAlign: 'center',
     },
     btn: {
         width: '80%',

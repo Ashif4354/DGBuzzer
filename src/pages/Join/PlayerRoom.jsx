@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import dgram from 'react-native-udp'
 
@@ -6,13 +6,14 @@ import RoomBackground from '../../Components/RoomBackground';
 import StatusIndicator from '../../Components/StatusIndicator';
 import { backButtonAlert } from '../../Scripts/Alerts';
 import { messageRecieveHandlerForPlayerRoom } from './Scripts/MessageRecievers';
-import { playBuzzer } from '../../Scripts/PlaySounds';
+import { BuzzerSound } from '../../Scripts/BuzzerSound';
 
 function PlayerRoom({ navigation, route }) {
     const [status, setStatus] = useState(0);
     const [myPosition, setMyPosition] = useState(0);
     const [firstPosition, setFirstPosition] = useState('N/A');
     const [UDPSocket, setUDPSocket] = useState(null)
+    const BuzzerAudio = useRef(null)
     
 
     const onExitHandler = () => {
@@ -31,7 +32,8 @@ function PlayerRoom({ navigation, route }) {
 
         UDPSocket.send(buzzMsg, undefined, undefined, 10000, route.params.serverIP, (err) => {console.log(err)})
         setStatus(-1)
-        playBuzzer()
+
+        BuzzerAudio.current.play()
     }
 
     useEffect(() => {
@@ -46,7 +48,9 @@ function PlayerRoom({ navigation, route }) {
             socket.on('message', (msg, rinfo) => {
                 messageRecieveHandlerForPlayerRoom(msg, rinfo, socket, setStatus, setMyPosition, setFirstPosition, route.params.playerName)
             })
-        })        
+        })    
+        
+        BuzzerAudio.current = new BuzzerSound()
 
     }, [])
 

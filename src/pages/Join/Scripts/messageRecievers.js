@@ -35,10 +35,14 @@ function messageRecieveHandlerForPlayerRoom(msg, rinfo, socket, setStatus, setMy
     if (msg.code === 1) {
         setStatus(1)
         setMyPosition(0)
-        setFirstPosition('Nil')
+        setFirstPosition('N/A')
     } else if (msg.code === 501) {
         setMyPosition(msg.buzzTimeline.indexOf(playerName) + 1)
-        setFirstPosition(msg.buzzTimeline[0])
+        if(msg.buzzTimeline.length === 0){
+            setFirstPosition('N/A')
+        } else {
+            setFirstPosition(msg.buzzTimeline[0])
+        }
     }
 
 }

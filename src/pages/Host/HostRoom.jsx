@@ -11,12 +11,13 @@ import { sendActiveStatus } from './Scripts/SendActiveStatus'
 const HostRoom = ({ navigation, route }) => {
     const [participantList, setParticipantList] = useState({})
     const [BuzzTimeline, setBuzzTimeline] = useState([])
-    const roomID = useRef(0)
     const [UDPSocket, setUDPSocket] = useState(null)
     const [active, setActive] = useState(false)
-    const initialTime = useRef(0)
     const [times, setTimes] = useState([])
-    const activeState = useRef(active)
+    const participantCount = useRef(0)
+    const activeRef = useRef(active)
+    const initialTime = useRef(0)
+    const roomID = useRef(0)   
 
     const onStartHandler = () => {
         setActive(prev => !prev)
@@ -32,20 +33,22 @@ const HostRoom = ({ navigation, route }) => {
     }
 
     const onExitHandler = () => {
-        UDPSocket.close()
+        // UDPSocket.close()
+        activeRef.current = -1  // -1 means exit and room has been closed
         navigation.popToTop()
     }
 
     const getConvertedTime = (time) => {
         let milliseconds = time % 1000
-        let seconds = Math.floor(time / 1000)
-        let minutes = Math.floor(seconds / 60)
+        time = Math.floor(time / 1000)
+        let seconds = time % 60
+        time = Math.floor(time / 60)
+        let minutes = time % 60
 
-        time = minutes.toString().padStart(2, '0') + ':' + (seconds - minutes * 60).toString().padStart(2, '0') + ':' + milliseconds.toString().padStart(3, '0')
+        time = minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0') + '.' + milliseconds.toString().padStart(3, '0')
 
         return time
     }
-
 
     useEffect(() => {
         // setRoomID(Math.floor(Math.random() * 1000))
@@ -61,7 +64,7 @@ const HostRoom = ({ navigation, route }) => {
             setUDPSocket(socket)
 
             socket.on('message', (msg, rinfo) => {
-                messageRecieveHandlerForHost(msg, rinfo, socket, route.params.roomName, roomID.current, Object.keys(participantList).length < route.params.roomSize, activeState, setParticipantList, setBuzzTimeline, setTimes, initialTime.current)
+                messageRecieveHandlerForHost(msg, rinfo, socket, route.params.roomName, roomID.current, participantCount.current < route.params.roomSize, activeRef, setParticipantList, setBuzzTimeline, setTimes, initialTime.current)
             })
         })
 
@@ -69,8 +72,12 @@ const HostRoom = ({ navigation, route }) => {
     }, [])
 
     useEffect(() => {
-        activeState.current = active
+        activeRef.current = active
     }, [active])
+
+    useEffect(() => {
+        participantCount.current = Object.keys(participantList).length
+    }, [participantList])
 
     useEffect(() => {
         if (UDPSocket) {
