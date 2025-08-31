@@ -2,10 +2,11 @@
 
 buildscript {
     ext {
-        buildToolsVersion = "33.0.0"
+        buildToolsVersion = "35.0.0"
         minSdkVersion = 21
-        compileSdkVersion = 33
-        targetSdkVersion = 33
+        compileSdkVersion = 36
+        targetSdkVersion = 36
+        kotlinVersion = "1.9.23"
 
         // We use NDK 23 which has both M1 support and is the side-by-side NDK version from AGP.
         ndkVersion = "23.1.7779620"
@@ -15,7 +16,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle")
+        classpath("com.android.tools.build:gradle:8.12.0")
         classpath("com.facebook.react:react-native-gradle-plugin")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
     }
 }
