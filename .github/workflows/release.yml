@@ -4,8 +4,12 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Release tag (e.g. v1.0.1)"
+        description: "Release tag (e.g. v1.0.1 or 1.0.1)"
         required: true
+        type: string
+      version_code:
+        description: "Version Code (integer, e.g. 5). Optional - leave blank to use default (4)"
+        required: false
         type: string
 
 permissions:
@@ -47,11 +51,23 @@ jobs:
         working-directory: android
         run: |
           chmod +x gradlew
-          ./gradlew assembleRelease --no-daemon \
-            -PMYAPP_UPLOAD_STORE_FILE=my-upload-key.keystore \
-            -PMYAPP_UPLOAD_STORE_PASSWORD="${{ secrets.KEYSTORE_PASSWORD }}" \
-            -PMYAPP_UPLOAD_KEY_ALIAS="${{ secrets.KEY_ALIAS }}" \
+          VERSION_NAME="${{ inputs.tag }}"
+          VERSION_NAME="${VERSION_NAME#v}"
+
+          GRADLE_ARGS=(
+            assembleRelease --no-daemon
+            -PMYAPP_UPLOAD_STORE_FILE=my-upload-key.keystore
+            -PMYAPP_UPLOAD_STORE_PASSWORD="${{ secrets.KEYSTORE_PASSWORD }}"
+            -PMYAPP_UPLOAD_KEY_ALIAS="${{ secrets.KEY_ALIAS }}"
             -PMYAPP_UPLOAD_KEY_PASSWORD="${{ secrets.KEY_PASSWORD }}"
+            -PversionName="$VERSION_NAME"
+          )
+
+          if [ -n "${{ inputs.version_code }}" ]; then
+            GRADLE_ARGS+=("-PversionCode=${{ inputs.version_code }}")
+          fi
+
+          ./gradlew "${GRADLE_ARGS[@]}"
 
       - name: Rename APK
         run: cp android/app/build/outputs/apk/release/app-release.apk dgbuzzer.apk
