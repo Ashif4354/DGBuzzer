@@ -34,15 +34,24 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # RN 0.72's Gradle plugin uses Kotlin 1.7, which can't read the Kotlin 2.0 metadata
-      # bundled with Gradle 8.13 (required by AGP 8.12). npm ci wipes the local fix, so re-apply it.
+      # RN 0.72's Gradle plugin was built for older Gradle.
+      # Under Gradle 8.13, serviceOf is no longer on the classpath and Kotlin 2.0 metadata check fails.
       - name: Patch React Native Gradle plugin
         run: |
-          f=node_modules/@react-native/gradle-plugin/build.gradle.kts
-          if ! grep -q "skip-metadata-version-check" "$f"; then
-            sed -i 's|    languageVersion = "1.5"|    languageVersion = "1.5"\n    freeCompilerArgs = freeCompilerArgs + "-Xskip-metadata-version-check"|' "$f"
-          fi
-          grep -n "skip-metadata-version-check" "$f"
+          node -e '
+          const fs = require("fs");
+          const file = "node_modules/@react-native/gradle-plugin/build.gradle.kts";
+          let c = fs.readFileSync(file, "utf8");
+          c = c.replace(/import org\.gradle\.configurationcache\.extensions\.serviceOf/g, "");
+          c = c.replace(/testRuntimeOnly\([\s\S]*?\.first\(\)\)\)/g, "");
+          if (!c.includes("skip-metadata-version-check")) {
+            c = c.replace(
+              /languageVersion = "1\.5"/,
+              "languageVersion = \"1.5\"\\n    freeCompilerArgs = freeCompilerArgs + \"-Xskip-metadata-version-check\""
+            );
+          }
+          fs.writeFileSync(file, c);
+          '
 
       - name: Decode keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/my-upload-key.keystore
