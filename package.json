@@ -6,6 +6,7 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "lint": "eslint .",
+    "postinstall": "node scripts/patch-rn-gradle-plugin.js",
     "start": "react-native start",
     "test": "jest"
   },
