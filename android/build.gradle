@@ -21,3 +21,24 @@ buildscript {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
     }
 }
+
+// AGP 8+ requires a namespace for every Android module. Older React Native libraries
+// only declare `package` in AndroidManifest.xml, so derive the namespace from there.
+subprojects { subproject ->
+    subproject.afterEvaluate {
+        def androidExt = subproject.extensions.findByName("android")
+        if (androidExt != null && subproject != rootProject.findProject(":app")) {
+            if (!androidExt.namespace) {
+                def manifest = subproject.file("src/main/AndroidManifest.xml")
+                if (manifest.exists()) {
+                    def pkg = new XmlSlurper().parse(manifest).@package.text()
+                    if (pkg) {
+                        androidExt.namespace = pkg
+                    }
+                }
+            }
+            // Libraries may still rely on generated BuildConfig classes.
+            androidExt.buildFeatures.buildConfig = true
+        }
+    }
+}
