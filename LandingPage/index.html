@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DG Buzzer – Local Wi-Fi Quiz Buzzer App</title>
+  <meta name="description" content="DG Buzzer turns phones into quiz buzzers over local Wi-Fi. Host a room, let players join, and see who buzzed first with millisecond precision." />
+  <link rel="icon" href="assets/icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="nav" id="nav">
+    <a href="#top" class="brand"><img src="assets/icon.png" alt="DG Buzzer logo" /><span>DG BUZZER</span></a>
+    <button class="menu-btn" id="menuBtn" aria-label="Toggle menu">☰</button>
+    <nav id="navLinks">
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#screens">Screenshots</a>
+      <a href="https://github.com/Ashif4354/DGBuzzer" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=com.dgbuzzer&pcampaignid=web_share" target="_blank" rel="noopener">Get the app</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-text reveal">
+        <span class="pill">Android · Local Wi-Fi · No internet needed</span>
+        <h1>Who buzzed <span class="grad">first?</span></h1>
+        <p>DG Buzzer turns every phone into a quiz buzzer. Host a room, let players join over the same Wi-Fi, and see the exact buzz order with millisecond timing.</p>
+        <div class="cta">
+          <a class="btn" href="https://play.google.com/store/apps/details?id=com.dgbuzzer&pcampaignid=web_share" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M3.6 2.3a1.5 1.5 0 0 0-.6 1.3v16.8c0 .5.2 1 .6 1.3l9.4-9.7L3.6 2.3zm10.8 8.4 2.6-2.7L5.4 1.4l9 9.3zm0 2.6-9 9.3L17 16l-2.6-2.7zm3.7-3.1-2.9 3 2.9 3 3.4-1.9c.9-.5.9-1.7 0-2.2l-3.4-1.9z"/></svg>
+            Get it on Google Play
+          </a>
+          <a class="btn btn-ghost" href="https://github.com/Ashif4354/DGBuzzer" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.38 7.86 10.9.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.37-3.87-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.69 1.25 3.35.96.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg>
+            View on GitHub
+          </a>
+        </div>
+      </div>
+      <div class="hero-phones reveal">
+        <div class="glow"></div>
+        <div class="phone p-back"><img src="assets/screenshot7.jpg" alt="Host buzz timeline" /></div>
+        <div class="phone p-front"><img src="assets/screenshot4.jpg" alt="Player buzzer screen" /></div>
+      </div>
+    </section>
+
+    <section class="strip reveal">
+      <div><b>⚡ ms</b><span>Precise timing</span></div>
+      <div><b>📶 Wi-Fi</b><span>Works offline</span></div>
+      <div><b>👥 Many</b><span>Players per room</span></div>
+      <div><b>🆓 Open</b><span>Source on GitHub</span></div>
+    </section>
+
+    <section id="features" class="section">
+      <h2 class="reveal">Everything a quiz night needs</h2>
+      <p class="sub reveal">Simple for the host, instant for the players.</p>
+      <div class="grid">
+        <article class="card reveal"><div class="ico">🏠</div><h3>Host a room</h3><p>Name your room, set the number of players and start. Players see it appear automatically.</p></article>
+        <article class="card reveal"><div class="ico">🔍</div><h3>Auto discovery</h3><p>Players just open "Join" and see the rooms in progress on their network. One tap to enter.</p></article>
+        <article class="card reveal"><div class="ico">🔴</div><h3>Big red buzzer</h3><p>A large, responsive BUZZ button with sound, so nobody misses their moment.</p></article>
+        <article class="card reveal"><div class="ico">⏱️</div><h3>Buzz timeline</h3><p>The host sees every buzz ranked in order with its exact time down to the millisecond.</p></article>
+        <article class="card reveal"><div class="ico">🔁</div><h3>One-tap reset</h3><p>Ready for the next question? Reset the round instantly and keep the game flowing.</p></article>
+        <article class="card reveal"><div class="ico">📊</div><h3>Live status</h3><p>Everyone sees room status and their own position, plus who took the first spot.</p></article>
+      </div>
+    </section>
+
+    <section id="how" class="section alt">
+      <h2 class="reveal">How it works</h2>
+      <p class="sub reveal">Connect all devices to the same Wi-Fi network and you're set.</p>
+      <div class="steps">
+        <div class="step reveal"><span>1</span><h3>Host creates a room</h3><p>Choose <b>Host</b>, enter a room name and size, then press Start.</p></div>
+        <div class="step reveal"><span>2</span><h3>Players join</h3><p>Choose <b>Join</b>, enter your name and tap the room from the list.</p></div>
+        <div class="step reveal"><span>3</span><h3>Start the round</h3><p>When everyone's in, the host starts and all buzzers go active.</p></div>
+        <div class="step reveal"><span>4</span><h3>Buzz!</h3><p>First to hit BUZZ wins. The host sees the full ranked timeline.</p></div>
+      </div>
+    </section>
+
+    <section id="screens" class="section">
+      <h2 class="reveal">See it in action</h2>
+      <p class="sub reveal">Swipe through the app.</p>
+      <div class="gallery" id="gallery">
+        <figure><img src="assets/screenshot1.jpg" alt="Home screen" loading="lazy" /><figcaption>Home</figcaption></figure>
+        <figure><img src="assets/screenshot3.jpg" alt="Create a room" loading="lazy" /><figcaption>Create a room</figcaption></figure>
+        <figure><img src="assets/screenshot2.jpg" alt="Join a room" loading="lazy" /><figcaption>Join a room</figcaption></figure>
+        <figure><img src="assets/screenshot6.jpg" alt="Host waiting for players" loading="lazy" /><figcaption>Host lobby</figcaption></figure>
+        <figure><img src="assets/screenshot5.jpg" alt="Host room waiting for buzzes" loading="lazy" /><figcaption>Waiting for buzzes</figcaption></figure>
+        <figure><img src="assets/screenshot4.jpg" alt="Player buzzer" loading="lazy" /><figcaption>Player buzzer</figcaption></figure>
+        <figure><img src="assets/screenshot7.jpg" alt="Buzz timeline" loading="lazy" /><figcaption>Buzz timeline</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="final reveal">
+      <img src="assets/icon.png" alt="" class="final-icon" />
+      <h2>Ready to run your next quiz?</h2>
+      <p>Download DG Buzzer for free and start buzzing in seconds.</p>
+      <div class="cta center">
+        <a class="btn" href="https://play.google.com/store/apps/details?id=com.dgbuzzer&pcampaignid=web_share" target="_blank" rel="noopener">Get it on Google Play</a>
+        <a class="btn btn-ghost" href="https://github.com/Ashif4354/DGBuzzer" target="_blank" rel="noopener">Star on GitHub</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>© <span id="year"></span> DarkGlance. All rights reserved.</span>
+    <a href="https://github.com/Ashif4354/DGBuzzer" target="_blank" rel="noopener">GitHub</a>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
