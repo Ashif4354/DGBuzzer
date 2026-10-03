@@ -1,0 +1,60 @@
+name: Build APK and AAB
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install dependencies
+        run: npm ci
+
+      # RN 0.72's Gradle plugin uses Kotlin 1.7, which can't read the Kotlin 2.0 metadata
+      # bundled with Gradle 8.13 (required by AGP 8.12). npm ci wipes the local fix, so re-apply it.
+      - name: Patch React Native Gradle plugin
+        run: |
+          f=node_modules/@react-native/gradle-plugin/build.gradle.kts
+          if ! grep -q "skip-metadata-version-check" "$f"; then
+            sed -i 's|    languageVersion = "1.5"|    languageVersion = "1.5"\n    freeCompilerArgs = freeCompilerArgs + "-Xskip-metadata-version-check"|' "$f"
+          fi
+          grep -n "skip-metadata-version-check" "$f"
+
+      - name: Decode keystore
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/my-upload-key.keystore
+
+      - name: Build release APK and AAB
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease bundleRelease --no-daemon \
+            -PMYAPP_UPLOAD_STORE_FILE=my-upload-key.keystore \
+            -PMYAPP_UPLOAD_STORE_PASSWORD="${{ secrets.KEYSTORE_PASSWORD }}" \
+            -PMYAPP_UPLOAD_KEY_ALIAS="${{ secrets.KEY_ALIAS }}" \
+            -PMYAPP_UPLOAD_KEY_PASSWORD="${{ secrets.KEY_PASSWORD }}"
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: dgbuzzer-apk
+          path: android/app/build/outputs/apk/release/app-release.apk
+          if-no-files-found: error
+
+      - name: Upload AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: dgbuzzer-aab
+          path: android/app/build/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
