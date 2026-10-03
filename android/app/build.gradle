@@ -74,6 +74,9 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     namespace "com.dgbuzzer"
+    buildFeatures {
+        buildConfig true
+    }
     defaultConfig {
         applicationId "com.dgbuzzer"
         minSdkVersion rootProject.ext.minSdkVersion
