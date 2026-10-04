@@ -1,4 +1,4 @@
-name: Build and Release APK
+name: Build and Release APK & Play Store
 
 on:
   workflow_dispatch:
@@ -8,9 +8,24 @@ on:
         required: true
         type: string
       version_code:
-        description: "Version Code (integer, e.g. 5). Optional - leave blank to use default (4)"
-        required: false
+        description: "Version Code (integer, must increase every release; e.g. 5)"
+        required: true
         type: string
+      play_track:
+        description: "Google Play Track"
+        required: true
+        type: choice
+        default: "internal"
+        options:
+          - internal
+          - alpha
+          - beta
+          - production
+      deploy_to_play:
+        description: "Deploy to Google Play Store"
+        required: true
+        type: boolean
+        default: true
 
 permissions:
   contents: write
@@ -40,27 +55,20 @@ jobs:
       - name: Decode keystore
         run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/my-upload-key.keystore
 
-      - name: Build release APK
+      - name: Build release APK and AAB
         working-directory: android
         run: |
           chmod +x gradlew
           VERSION_NAME="${{ inputs.tag }}"
           VERSION_NAME="${VERSION_NAME#v}"
 
-          GRADLE_ARGS=(
-            assembleRelease --no-daemon
-            -PMYAPP_UPLOAD_STORE_FILE=my-upload-key.keystore
-            -PMYAPP_UPLOAD_STORE_PASSWORD="${{ secrets.KEYSTORE_PASSWORD }}"
-            -PMYAPP_UPLOAD_KEY_ALIAS="${{ secrets.KEY_ALIAS }}"
-            -PMYAPP_UPLOAD_KEY_PASSWORD="${{ secrets.KEY_PASSWORD }}"
-            -PversionName="$VERSION_NAME"
-          )
-
-          if [ -n "${{ inputs.version_code }}" ]; then
-            GRADLE_ARGS+=("-PversionCode=${{ inputs.version_code }}")
-          fi
-
-          ./gradlew "${GRADLE_ARGS[@]}"
+          ./gradlew assembleRelease bundleRelease --no-daemon \
+            -PMYAPP_UPLOAD_STORE_FILE=my-upload-key.keystore \
+            -PMYAPP_UPLOAD_STORE_PASSWORD="${{ secrets.KEYSTORE_PASSWORD }}" \
+            -PMYAPP_UPLOAD_KEY_ALIAS="${{ secrets.KEY_ALIAS }}" \
+            -PMYAPP_UPLOAD_KEY_PASSWORD="${{ secrets.KEY_PASSWORD }}" \
+            -PversionName="$VERSION_NAME" \
+            -PversionCode="${{ inputs.version_code }}"
 
       - name: Rename APK
         run: cp android/app/build/outputs/apk/release/app-release.apk dgbuzzer.apk
@@ -72,3 +80,13 @@ jobs:
           name: DGBuzzer ${{ inputs.tag }}
           files: dgbuzzer.apk
           generate_release_notes: true
+
+      - name: Deploy to Google Play
+        if: ${{ inputs.deploy_to_play }}
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_STORE_JSON_KEY }}
+          packageName: com.dgbuzzer
+          releaseFiles: android/app/build/outputs/bundle/release/app-release.aab
+          track: ${{ inputs.play_track }}
+          status: completed
