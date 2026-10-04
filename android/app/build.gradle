@@ -68,6 +68,9 @@ def enableProguardInReleaseBuilds = false
  */
 def jscFlavor = 'org.webkit:android-jsc:+'
 
+def appVersionCode = Integer.parseInt((findProperty('versionCode') ?: '4') as String)
+def appVersionName = (findProperty('versionName') ?: '1.0.1') as String
+
 android {
     ndkVersion rootProject.ext.ndkVersion
 
@@ -81,8 +84,8 @@ android {
         applicationId "com.dgbuzzer"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode (project.findProperty('versionCode') ?: 4).toInteger()
-        versionName (project.findProperty('versionName') ?: "1.0.1")
+        versionCode appVersionCode
+        versionName appVersionName
     }
     signingConfigs {
         release {
