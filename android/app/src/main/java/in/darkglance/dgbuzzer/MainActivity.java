@@ -1,4 +1,4 @@
-package com.dgbuzzer;
+package in.darkglance.dgbuzzer;
 
 import android.os.Bundle;
 import com.facebook.react.ReactActivity;

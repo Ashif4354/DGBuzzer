@@ -43,7 +43,7 @@ To allow GitHub Actions to upload releases automatically to Google Play via the 
 1. Open the [Google Play Console](https://play.google.com/console).
 2. In the left navigation, go to **Developer account → API access**.
 3. Under **Service accounts**, find the service account you just created and click **Grant access** (or **Manage permissions**).
-4. Under **App permissions**, select `com.dgbuzzer`.
+4. Under **App permissions**, select `in.darkglance.dgbuzzer`.
 5. Under **Account permissions**, ensure the following permissions are checked:
    - **Releases**: *Create, edit, and roll out releases*
    - *Manage testing tracks and edit tester lists*
@@ -62,7 +62,7 @@ To allow GitHub Actions to upload releases automatically to Google Play via the 
 > Before running the automated release workflow to the Play Store:
 > 1. Run the **Build APK and AAB** workflow (`build.yml`) once in GitHub Actions.
 > 2. Download the generated `dgbuzzer-aab` artifact.
-> 3. Go to [Google Play Console](https://play.google.com/console) → `com.dgbuzzer` → **Internal testing** (or Closed testing).
+> 3. Go to [Google Play Console](https://play.google.com/console) → `in.darkglance.dgbuzzer` → **Internal testing** (or Closed testing).
 > 4. Create a new release and upload the `.aab` manually to initialize your store listing.
 
 Once the initial manual release is accepted, all subsequent releases can be automated completely through GitHub Actions.
