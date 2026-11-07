@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Google Tag Manager -->
+  <script>
+    (function (w, d, s, l, i) {
+      w[l] = w[l] || []; w[l].push({
+        'gtm.start':
+          new Date().getTime(), event: 'gtm.js'
+      }); var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+          'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', 'GTM-5556CNSC');
+  </script>
+  <!-- End Google Tag Manager -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Privacy Policy – DG Buzzer</title>
+  <meta name="description"
+    content="Privacy Policy for DG Buzzer. Learn how we prioritize user privacy through local-network-only communications with zero cloud tracking." />
+  <link rel="icon" href="assets/icon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript>
+    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5556CNSC" height="0" width="0"
+      style="display:none;visibility:hidden">
+    </iframe>
+  </noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
+  <header class="nav" id="nav">
+    <a href="index.html" class="brand"><img src="assets/icon.png" alt="DG Buzzer logo" /><span>DG BUZZER</span></a>
+    <button class="menu-btn" id="menuBtn" aria-label="Toggle menu">☰</button>
+    <nav id="navLinks">
+      <a href="index.html#features">Features</a>
+      <a href="index.html#how">How it works</a>
+      <a href="index.html#screens">Screenshots</a>
+      <a href="terms.html">Terms</a>
+      <a href="https://github.com/Ashif4354/DGBuzzer" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn btn-sm" href="https://play.google.com/store/apps/details?id=in.darkglance.dgbuzzer&pcampaignid=web_share"
+        target="_blank" rel="noopener">Get the app</a>
+    </nav>
+  </header>
+
+  <main class="legal-main">
+    <a href="index.html" class="legal-nav-back">
+      ← Back to Home
+    </a>
+
+    <header class="legal-header">
+      <h1>Privacy <span class="grad">Policy</span></h1>
+      <div class="legal-meta">
+        <span>Application: <strong>DG Buzzer</strong> (<code>in.darkglance.dgbuzzer</code>)</span>
+        <span>Developer: <strong>DarkGlance</strong></span>
+        <span class="legal-badge">Privacy by Design</span>
+        <span>Last Updated: November 2026</span>
+      </div>
+    </header>
+
+    <article class="legal-content">
+      <div class="legal-card">
+        <h4>🔒 Core Privacy Commitment</h4>
+        <p>DG Buzzer is built with privacy at its foundation. The app operates strictly over your local Wi-Fi or hotspot network. We do not maintain any cloud databases, we do not require account registration, and we do not collect, store, or sell any personal data.</p>
+      </div>
+
+      <section class="legal-section">
+        <h2>1. Overview</h2>
+        <p>This Privacy Policy explains how <strong>DarkGlance</strong> ("we", "us", or "our") handles information in connection with the <strong>DG Buzzer</strong> mobile application (the "App") and our website. We believe user privacy is a fundamental right. Because DG Buzzer functions entirely as a decentralized, peer-to-peer local utility, your gameplay data never leaves your local network.</p>
+      </section>
+
+      <section class="legal-section">
+        <h2>2. Information We Do NOT Collect</h2>
+        <p>To provide full transparency, here is a list of what DG Buzzer does <strong>not</strong> collect:</p>
+        <ul>
+          <li><strong>No User Accounts:</strong> You do not need to register, create a username, or provide an email address, phone number, or password.</li>
+          <li><strong>No Cloud Storage:</strong> Game rooms, buzz logs, and participant lists are not transmitted to any remote servers, cloud infrastructure, or external databases.</li>
+          <li><strong>No Location Tracking:</strong> We do not collect or monitor your physical GPS or device geolocation coordinates.</li>
+          <li><strong>No Device Files or Media:</strong> The App does not access your photos, camera, microphone, contacts, or storage files.</li>
+          <li><strong>No In-App Analytics or Trackers:</strong> The mobile app contains no third-party tracking SDKs, advertising frameworks, or telemetry trackers.</li>
+        </ul>
+      </section>
+
+      <section class="legal-section">
+        <h2>3. Information Processed Locally on Your Network</h2>
+        <p>When you host or participate in a quiz room, certain temporary information is exchanged between devices strictly over your local network:</p>
+        <ul>
+          <li><strong>Room Name &amp; Capacity:</strong> When a host creates a room, a temporary room name and player limit are defined to identify the room on the local network.</li>
+          <li><strong>Player Nickname:</strong> When a player connects, they enter a nickname so the host and other participants can identify who pressed the buzzer.</li>
+          <li><strong>Local IP Addresses &amp; UDP Packets:</strong> The app utilizes UDP broadcast and socket communication (ports 10000 and 10001) over your local Wi-Fi router or personal hotspot to discover rooms and transmit buzz signals in real time.</li>
+          <li><strong>Buzzer Timestamps:</strong> When a player taps the buzzer, the exact millisecond timestamp is calculated locally on the host device to rank buzz sequence.</li>
+        </ul>
+        <p><strong>Ephemeral Retention:</strong> All of this data exists exclusively in temporary volatile device memory (RAM) for the duration of the active quiz session. As soon as the host resets the room, exits, or the app is closed, all session data is immediately discarded.</p>
+      </section>
+
+      <section class="legal-section">
+        <h2>4. Device Permissions</h2>
+        <p>The Android version of DG Buzzer requests only the minimal permissions strictly necessary for local network communication:</p>
+        <ul>
+          <li><code>android.permission.INTERNET</code>: Required by the Android operating system to create local UDP socket connections between the host and players on the same network. It is not used to transmit personal data to the internet.</li>
+          <li><code>android.permission.ACCESS_NETWORK_STATE</code>: Required to detect active network connectivity and identify the local IP address assigned by your Wi-Fi router so rooms can be discovered.</li>
+        </ul>
+      </section>
+
+      <section class="legal-section">
+        <h2>5. Website &amp; Landing Page Analytics</h2>
+        <p>While the mobile application contains no tracking or analytics, our marketing website (landing page) utilizes Google Tag Manager (GTM-5556CNSC) to collect aggregated, non-personally identifiable web traffic metrics (such as page views, browser type, and referring sites). This helps us evaluate website performance and optimize technical delivery. You can disable cookies or use browser tracking blockers if you prefer not to participate in web metrics.</p>
+      </section>
+
+      <section class="legal-section">
+        <h2>6. Children's Privacy (COPPA &amp; GDPR-K)</h2>
+        <p>DG Buzzer is suitable for general audiences, educational institutions, classrooms, and family trivia games. Because the app does not collect, store, or transmit any personal information, it fully complies with the Children’s Online Privacy Protection Act (COPPA), GDPR-K, and applicable global child data protection regulations. We do not knowingly collect personal data from anyone, including children under 13.</p>
+      </section>
+
+      <section class="legal-section">
+        <h2>7. Data Security</h2>
+        <p>Because DG Buzzer stores no personal information on remote servers, your data is inherently protected against server-side data breaches. Communication between devices is contained within your private Wi-Fi network or hotspot. We recommend using secure, password-protected Wi-Fi networks when hosting public trivia sessions.</p>
+      </section>
+
+      <section class="legal-section">
+        <h2>8. Open Source &amp; Code Transparency</h2>
+        <p>In the spirit of trust and transparency, DG Buzzer is open-source. Anyone can inspect our source code, network communication logic, and build configurations directly on our public GitHub repository: <a href="https://github.com/Ashif4354/DGBuzzer" target="_blank" rel="noopener" style="color:#7eb3ff;text-decoration:underline;">github.com/Ashif4354/DGBuzzer</a>.</p>
+      </section>
+
+      <section class="legal-section">
+        <h2>9. Changes to this Privacy Policy</h2>
+        <p>We may update our Privacy Policy periodically to reflect enhancements or changes in legal regulations. Any updates will be published directly on this page with an updated "Last Updated" date. Continued use of DG Buzzer after changes are published constitutes your acceptance of the revised policy.</p>
+      </section>
+
+      <section class="legal-section">
+        <h2>10. Contact Us</h2>
+        <p>If you have any questions, suggestions, or privacy concerns regarding DG Buzzer or this Privacy Policy, please reach out to us:</p>
+        <ul>
+          <li><strong>Developer:</strong> DarkGlance</li>
+          <li><strong>GitHub Issues / Discussions:</strong> <a href="https://github.com/Ashif4354/DGBuzzer/issues" target="_blank" rel="noopener" style="color:#7eb3ff;text-decoration:underline;">github.com/Ashif4354/DGBuzzer/issues</a></li>
+          <li><strong>Package Identifier:</strong> <code>in.darkglance.dgbuzzer</code></li>
+        </ul>
+      </section>
+    </article>
+  </main>
+
+  <footer>
+    <span>© <span id="year"></span> DarkGlance. All rights reserved.</span>
+    <div class="footer-links">
+      <a href="privacy.html" style="color:#fff;font-weight:600;">Privacy Policy</a>
+      <a href="terms.html">Terms &amp; Conditions</a>
+      <a href="https://github.com/Ashif4354/DGBuzzer" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
