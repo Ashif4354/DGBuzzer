@@ -76,12 +76,12 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.dgbuzzer"
+    namespace "in.darkglance.dgbuzzer"
     buildFeatures {
         buildConfig true
     }
     defaultConfig {
-        applicationId "com.dgbuzzer"
+        applicationId "in.darkglance.dgbuzzer"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode appVersionCode
