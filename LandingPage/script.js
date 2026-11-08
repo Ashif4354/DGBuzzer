@@ -3,8 +3,14 @@ const navLinks = document.getElementById('navLinks');
 const menuBtn = document.getElementById('menuBtn');
 
 if (menuBtn && navLinks) {
-  menuBtn.addEventListener('click', () => navLinks.classList.toggle('open'));
-  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+  menuBtn.addEventListener('click', () => {
+    const isOpen = navLinks.classList.toggle('open');
+    menuBtn.setAttribute('aria-expanded', String(isOpen));
+  });
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    navLinks.classList.remove('open');
+    menuBtn.setAttribute('aria-expanded', 'false');
+  }));
 }
 
 if (nav) {
@@ -28,10 +34,28 @@ if (reveals.length > 0) {
 // Drag-to-scroll gallery
 const g = document.getElementById('gallery');
 if (g) {
-  let down = false, startX = 0, startLeft = 0;
-  g.addEventListener('mousedown', e => { down = true; startX = e.pageX; startLeft = g.scrollLeft; g.style.scrollSnapType = 'none'; });
-  window.addEventListener('mouseup', () => { down = false; g.style.scrollSnapType = ''; });
-  g.addEventListener('mousemove', e => { if (down) g.scrollLeft = startLeft - (e.pageX - startX); });
+  const prev = document.getElementById('galleryPrev');
+  const next = document.getElementById('galleryNext');
+  const progress = document.querySelector('.gallery-progress span');
+  const step = () => {
+    const figure = g.querySelector('figure');
+    return figure ? figure.getBoundingClientRect().width + parseFloat(getComputedStyle(g).gap || 0) : 240;
+  };
+  if (prev) prev.addEventListener('click', () => g.scrollBy({ left: -step(), behavior: 'smooth' }));
+  if (next) next.addEventListener('click', () => g.scrollBy({ left: step(), behavior: 'smooth' }));
+  const updateProgress = () => {
+    if (!progress) return;
+    const maxScroll = g.scrollWidth - g.clientWidth;
+    const visibleRatio = g.clientWidth / g.scrollWidth;
+    const trackWidth = g.parentElement.querySelector('.gallery-progress').clientWidth;
+    const thumbWidth = Math.max(trackWidth * visibleRatio, 34);
+    const offset = maxScroll > 0 ? (trackWidth - thumbWidth) * (g.scrollLeft / maxScroll) : 0;
+    progress.style.width = `${thumbWidth}px`;
+    progress.style.transform = `translateX(${offset}px)`;
+  };
+  g.addEventListener('scroll', updateProgress, { passive: true });
+  window.addEventListener('resize', updateProgress);
+  updateProgress();
 }
 
 const yearEl = document.getElementById('year');
